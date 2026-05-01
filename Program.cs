@@ -34,10 +34,10 @@ class Program
                 CadastrarMedico();
                 break;
             case "2":
-                //ListarMédicos();
+                ListarMedicos();
                 break;
             case "3":
-                //AlterarMedico();
+                AlterarMedico();
                 break;
             case "4":
                 //ExcluirMedico();
@@ -86,8 +86,36 @@ class Program
 
     public static void AlterarMedico()
     {
-        // Implementar alteração de médico
-        Console.WriteLine("Funcionalidade de alterar médico não implementada ainda.");
+        Console.WriteLine("Digite o nome completo do médico que deseja alterar:");
+        string? nomeCompleto = Console.ReadLine();
+
+        Console.WriteLine("Digite o novo cargo do médico:");
+        string? cargo = Console.ReadLine();
+
+        Console.WriteLine("Digite o novo salário do médico:");
+        string? salarioInput = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(nomeCompleto) || string.IsNullOrWhiteSpace(cargo) || !decimal.TryParse(salarioInput, out decimal salario))
+        {
+            Console.WriteLine("Entrada inválida. Alteração cancelada.");
+            return;
+        }
+
+        Medico medico = new Medico(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+
+        if (!medico.ExistePorNome(nomeCompleto))
+        {
+            Console.WriteLine("O nome informado não existe na tabela medicos.");
+            return;
+        }
+
+        medico.Alterar(nomeCompleto, cargo, salario);
+    }
+
+    public static void ListarMedicos()
+    {
+        Medico medico = new Medico(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+        medico.ListarTodos();
     }
 
     public static void ExcluirMedico()
