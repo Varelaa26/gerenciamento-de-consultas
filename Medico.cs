@@ -126,4 +126,34 @@ class Medico
             }
         }
     }
+    public bool Excluir(string nomeCompleto)
+    {
+        string sql = "DELETE FROM medicos WHERE nomeCompleto = @nomeCompleto";
+
+        using (var connection = new MySqlConnection(_connectionString))
+        using (var command = new MySqlCommand(sql, connection))
+        {
+            command.Parameters.AddWithValue("@nomeCompleto", nomeCompleto);
+
+            try
+            {
+                connection.Open();
+                int linhasAfetadas = command.ExecuteNonQuery();
+
+                if (linhasAfetadas > 0)
+                {
+                    Console.WriteLine("Médico excluído com sucesso!");
+                    return true;
+                }
+
+                Console.WriteLine("Nenhum médico foi excluído.");
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Erro ao excluir médico: {e.Message}");
+                return false;
+            }
+        }
+    }
 }

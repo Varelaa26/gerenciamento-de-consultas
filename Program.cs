@@ -16,10 +16,10 @@ class Program
         Console.WriteLine("2. Listar médicos");
         Console.WriteLine("3. Alterar médico");
         Console.WriteLine("4. Excluir médico");
-        Console.WriteLine("5. Cadastrar usuário");
-        Console.WriteLine("6. Listar usuários");
-        Console.WriteLine("7. Alterar usuário");
-        Console.WriteLine("8. Excluir usuário");
+        Console.WriteLine("5. Cadastrar paciente");
+        Console.WriteLine("6. Listar pacientes");
+        Console.WriteLine("7. Alterar paciente");
+        Console.WriteLine("8. Excluir paciente");
         Console.WriteLine("9. Sair");
         string? opcao = Console.ReadLine();
 
@@ -40,19 +40,19 @@ class Program
                 AlterarMedico();
                 break;
             case "4":
-                //ExcluirMedico();
+                ExcluirMedico();
                 break;
             case "5":
-                //CadastrarUsuário();
+                CadastrarPaciente();
                 break;
             case "6":
-                //ListarUsuários();
+                ListarPacientes();
                 break;
             case "7":
-                //AlterarUsuario();
+                AlterarPaciente();
                 break;
             case "8":
-                //ExcluirUsuario();
+                ExcluirPaciente();
                 break;
             case "9":
                 Console.WriteLine("Saindo...");
@@ -120,19 +120,85 @@ class Program
 
     public static void ExcluirMedico()
     {
-        // Implementar exclusão de médico
-        Console.WriteLine("Funcionalidade de excluir médico não implementada ainda.");
+        Console.WriteLine("Digite o nome completo do médico que deseja excluir:");
+        string? nomeCompleto = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(nomeCompleto))
+        {
+            Console.WriteLine("Entrada inválida. Exclusão cancelada.");
+            return;
+        }
+
+        Medico medico = new Medico(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+
+        if (!medico.ExistePorNome(nomeCompleto))
+        {
+            Console.WriteLine("O nome informado não existe na tabela medicos.");
+            return;
+        }
+
+        medico.Excluir(nomeCompleto);
     }
 
-    public static void AlterarUsuario()
+    public static void CadastrarPaciente()
     {
-        // Implementar alteração de usuário
-        Console.WriteLine("Funcionalidade de alterar usuário não implementada ainda.");
+        Console.WriteLine("Nome do paciente:");
+        string nome = Console.ReadLine() ?? "";
+        Console.WriteLine("Idade:");
+        int idade = int.Parse(Console.ReadLine() ?? "0");
+        Console.WriteLine("Sexo:");
+        string sexo = Console.ReadLine() ?? "";
+        Console.WriteLine("Endereço:");
+        string endereco = Console.ReadLine() ?? "";
+        Console.WriteLine("Telefone:");
+        string telefone = Console.ReadLine() ?? "";
+        Console.WriteLine("Email:");
+        string email = Console.ReadLine() ?? "";
+
+        Paciente p = new Paciente(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+        p.Cadastrar(nome, idade, sexo, endereco, telefone, email);
     }
 
-    public static void ExcluirUsuario()
+    public static void ListarPacientes()
     {
-        // Implementar exclusão de usuário
-        Console.WriteLine("Funcionalidade de excluir usuário não implementada ainda.");
+        Paciente p = new Paciente(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+        p.ListarTodos();
+    }
+
+    public static void AlterarPaciente()
+    {
+        Console.WriteLine("Digite o nome do paciente que deseja alterar:");
+        string nome = Console.ReadLine() ?? "";
+
+        Paciente p = new Paciente(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+        
+        if (!p.ExistePorNome(nome)) {
+            Console.WriteLine("Paciente não encontrado.");
+            return;
+        }
+
+        Console.WriteLine("Nova Idade:");
+        int idade = int.Parse(Console.ReadLine() ?? "0");
+        Console.WriteLine("Novo Endereço:");
+        string endereco = Console.ReadLine() ?? "";
+        Console.WriteLine("Novo Telefone:");
+        string telefone = Console.ReadLine() ?? "";
+        Console.WriteLine("Novo Email:");
+        string email = Console.ReadLine() ?? "";
+
+        p.Alterar(nome, idade, endereco, telefone, email);
+    }
+
+    public static void ExcluirPaciente()
+    {
+        Console.WriteLine("Digite o nome do paciente para excluir:");
+        string nome = Console.ReadLine() ?? "";
+
+        Paciente p = new Paciente(new Conexao("localhost", "consultas", "root", "root").ObterStringDeConexao());
+        if (p.ExistePorNome(nome)) {
+            p.Excluir(nome);
+        } else {
+            Console.WriteLine("Paciente não encontrado.");
+        }
     }
 }
